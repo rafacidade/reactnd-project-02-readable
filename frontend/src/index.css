@@ -1,0 +1,49 @@
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: sans-serif;
+  color: #252525;
+  background-color: #f8f9fa
+}
+
+a {
+  text-decoration: none;
+  color: #252525;
+}
+
+a:hover {
+  text-decoration: none;
+  color: blue;
+}
+
+.container {
+  min-width: 1000px;
+}
+
+.main {
+  min-height: 800px;
+  margin-top: 60px;
+}
+
+.icon {
+  font-size: 27px;
+  color: #697784; 
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+}
+
+.icon-btn:hover {
+  color: #007bff;
+  cursor: pointer;
+}
+
+.bar-btns {
+  text-align: right;
+}
+
+.bar-btns > button {
+  margin: 2px;
+}
