@@ -20,7 +20,7 @@ class PostListItem extends Component {
 		const { dispatch, id } = this.props
 		
 		dispatch(handleVoteDownPost(id))
-	} 
+	}
   
   render() {
 		const { post } = this.props
@@ -39,9 +39,9 @@ class PostListItem extends Component {
           	<Link to={`/${category}`}>
             	<h6>{formatCategoryName(category)}</h6>
         		</Link>
-        	<Link to={`/${post.category}/${post.id}`}>
-            	<h2 className="card-title">{title}</h2>
-        	</Link>
+						<Link to={`/${post.category}/${post.id}`}>
+								<h2 className="card-title">{title}</h2>
+						</Link>
             <div className="text-muted">
               Posted on {formatDate(timestamp)} by <strong>{author}</strong>
             </div>
@@ -59,8 +59,8 @@ class PostListItem extends Component {
 	            </i>
             </div>
             <hr/>
-						<Link to={`/${post.category}/${post.id}`}>
-            	<button className="btn btn-sm btn-primary">Read Post &rarr;</button>
+						<Link to={`/${post.category}/${post.id}`}>	
+							<button className="btn btn-sm btn-primary">Read Post &rarr;</button>
 						</Link>
           </div>
         </div>     
@@ -75,4 +75,4 @@ function mapStateToProps ({ posts }, { id }) {
   }
 }
 
-export default withRouter(connect(mapStateToProps)(PostListItem))
+export default connect(mapStateToProps)(PostListItem)

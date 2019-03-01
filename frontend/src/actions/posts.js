@@ -46,6 +46,7 @@ export function handleEditPost (post) {
     })
       .then((post) => dispatch(editPost(post)))
       .then(() => dispatch(hideLoading()))
+      .catch( err => { console.log(err); })
   }
 }
 

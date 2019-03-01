@@ -18,10 +18,10 @@ export default function posts (state = {}, action) {
         ...state,
         [action.post.id]: action.post,
       }
-  	case DELETE_POST :
+    case DELETE_POST :
       return {
-        state: state.filter(post => post.id !== action.post.id),
-        [action.post.id]: action.post,
+        state: Object.keys(state).filter(p => state[p].id !== action.postId),
+        postId: action.postId, 
       }
   	case EDIT_POST :
       return {

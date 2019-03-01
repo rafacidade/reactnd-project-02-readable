@@ -27,13 +27,15 @@ class PostDetails extends Component {
     e.preventDefault()
 		
     const { dispatch, postId } = this.props
-    
-    const post = {
-      id: postId
-    }
 		
-		dispatch(handleDeletePost(post))
+		dispatch(handleDeletePost(postId))
   	this.props.history.push('/')
+  }
+
+  handleEditPostClick  = (e) => {
+    e.preventDefault()		
+    const { postId } = this.props
+    this.props.history.push(`/edit/post/${postId}`)
   }
   
   render() {    
@@ -58,7 +60,7 @@ class PostDetails extends Component {
         <div className="card shadow mb-4">
           <div className="card-body">
             <div className="bar-btns">
-              <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#modaleEditPost">Edit</button>
+              <button type="button" className="btn btn-primary" onClick={this.handleEditPostClick}>Edit</button>
               <button type="button" className="btn btn-danger" onClick={this.handleDeletePostClick}>Delete</button>
             </div>
             {category && 

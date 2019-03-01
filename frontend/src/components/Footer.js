@@ -1,8 +1,14 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
-export default function Footer () {
-  return (
-    <footer className="by-5 bg-dark">
-    </footer>    
-  )
+
+class Footer extends Component {
+  render() {
+    return (
+      <footer className="by-5 bg-dark">
+      </footer>    
+    )
+  }  
 }
+
+export default Footer

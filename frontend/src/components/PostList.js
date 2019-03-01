@@ -28,17 +28,18 @@ class PostList extends Component {
 
     const pageTitle = categoryId ? formatCategoryName(categories[categoryId].path) + ' Posts' : 'All Posts'
 
-    const postIds = this.state.orderBy === ORDER_BY_MOST_RECENT
+    //define order
+    this.state.orderBy === ORDER_BY_MOST_RECENT
       ? this.props.postsIds.sort((a,b) => posts[b].timestamp - posts[a].timestamp)
       : this.props.postsIds.sort((a,b) => posts[b].voteScore - posts[a].voteScore)
 
     return (
       <div className="container main">
         <div className="bar-btns">
-          <button type="button" className="btn btn-light btn-sm" data-toggle="button" onClick={this.handleOrderByMostRecentClick}>
+          <button type="button" className="btn btn-light btn-sm" onClick={this.handleOrderByMostRecentClick}>
             Order By Most Recent
           </button>
-          <button type="button" className="btn btn-light btn-sm" data-toggle="button" onClick={this.handleOrderByBestVotingClick}>
+          <button type="button" className="btn btn-light btn-sm" onClick={this.handleOrderByBestVotingClick}>
             Order By Best Voting
           </button>
         </div>
@@ -61,7 +62,7 @@ function mapStateToProps ({ posts, categories }, props) {
   
   const postsIds = typeof categoryPath === 'undefined'
     ? Object.keys(posts)
-    : Object.keys(posts).filter(postId => { return posts[postId].category === categoryPath })
+    : Object.keys(posts).filter(postId => posts[postId].category === categoryPath)
     
   return {
     postsIds: postsIds.sort((a,b) => posts[b].timestamp - posts[a].timestamp),          
