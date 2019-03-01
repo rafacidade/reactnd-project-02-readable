@@ -24,7 +24,6 @@ export function handleAddPost (post) {
     return _addPost(post)
       .then((post) => dispatch(addPost(post)))
       .then(() => dispatch(hideLoading()))
-      .catch( err => { console.log(err); })
   }
 }
 
@@ -38,15 +37,11 @@ function editPost (post) {
 
 export function handleEditPost (post) {
   return (dispatch) => {
-    
     dispatch(showLoading())
 
-    return _editPost({
-      post
-    })
-      .then((post) => dispatch(editPost(post)))
+    return _editPost(post)
+      .then((data) => dispatch(editPost(data.post)))
       .then(() => dispatch(hideLoading()))
-      .catch( err => { console.log(err); })
   }
 }
 

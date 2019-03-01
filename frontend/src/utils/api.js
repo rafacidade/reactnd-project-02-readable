@@ -93,15 +93,16 @@ export const _voteDownPost = (postId) =>
     body: JSON.stringify({ option: 'downVote' }),
   }).then(res => res.json())
 
-export const _editPost = (post, body) =>
+export const _editPost = (post) =>
   fetch(`${api}/posts/${post.id}`, {
     method: 'PUT',
     headers: {
       ...headers,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ body })
+    body: JSON.stringify({ post })
   }).then(res => res.json())
+  .catch( error => console.log(error))
 
 /*** COMMENTS ***/
 

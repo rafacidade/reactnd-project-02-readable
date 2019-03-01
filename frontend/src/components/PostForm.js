@@ -16,7 +16,6 @@ class PostForm extends Component {
 
   componentDidMount() {
     const { postId } = this.props
-    console.log(this.props)
 
     if (postId === '') {
       return
@@ -26,8 +25,6 @@ class PostForm extends Component {
 
     const returnTo = '/'
 
-    console.log(this.state)
-
     this.setState({
       id,
       author,
@@ -35,9 +32,7 @@ class PostForm extends Component {
       category,
       body,
       returnTo,
-    })
-
-    
+    })    
   }
 
   handleChange = (e) => {
@@ -74,6 +69,7 @@ class PostForm extends Component {
     }))
 
     alert('Success!')
+    
   }
 
   validateForm = () => {
