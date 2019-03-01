@@ -1,6 +1,6 @@
 # Readable Project
 
-This is the second project for Udacity's React Developer Nanodegree. Readable uses components and manage state, based on some React fundamentals, generating a UI that allows the user to manage his/hers reading through virtual shelves.
+This is the second project for Udacity's React Developer Nanodegree and combine React and Redux. 
 
 
 ## Installing the project
