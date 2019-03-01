@@ -12,7 +12,7 @@ This is the second project for Udacity's React Developer Nanodegree and combine 
 
 ## How Readable Works
 
-### Main Page
+### Main Page / List
 
 On the main page, the application shows a list of posts, where the user can access the post details. It is also possible to give the post the thumbs up or down on the list.
 
@@ -20,7 +20,7 @@ There are two buttons to define the post list order, by the most recent (default
 
 The posts can also be listed by its category, through the nav bar.
 
-### New Page
+### New Post Page
 Where the user adds a new post to the database, anonymously.
 
 ### Post Detail Page
