@@ -1,83 +1,98 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import CommentList from './CommentList'
-import { Link, Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { TiMessage, TiThumbsUp, TiThumbsDown } from 'react-icons/ti'
 import { handleVoteDownPost, handleVoteUpPost, handleDeletePost } from '../actions/posts'
 import { formatDate, formatCategoryName } from '../utils/helpers';
+import CommentAdd from './CommentAdd';
 
 class PostDetails extends Component {
   handleVoteUpPostClick = (e) => {
 		e.preventDefault()
-		
+
 		const { dispatch, postId } = this.props
-		
+
 		dispatch(handleVoteUpPost(postId))
 	}
 
 	handleVoteDownPostClick = (e) => {
 		e.preventDefault()
-		
+
 		const { dispatch, postId } = this.props
-		
+
 		dispatch(handleVoteDownPost(postId))
   }
 
   handleDeletePostClick  = (e) => {
     e.preventDefault()
-		
+
     const { dispatch, postId } = this.props
-		
-		dispatch(handleDeletePost(postId))
-  	this.props.history.push('/')
+
+    const post = { id: postId }
+
+    if(window.confirm('Delete post?')) {
+      dispatch(handleDeletePost(post))
+  	  this.props.history.push('/')
+    }
   }
 
   handleEditPostClick  = (e) => {
-    e.preventDefault()		
+    e.preventDefault()
     const { postId } = this.props
     this.props.history.push(`/edit/post/${postId}`)
   }
-  
-  render() {    
-    const { post, categories, categoriesIds } = this.props
 
-    /* if (typeof post === 'undefined') {
-      return <Redirect to='/not-found' />
+  render() {
+    const { postId, post, categories, categoriesIds } = this.props
+
+    if (typeof post === 'undefined') {
+      return (
+          <div className="container main" align="center">
+            <h2>Post not found</h2>
+          </div>
+       )
     }
 
     if (post.deleted === true) {
-      return <Redirect to='/not-found' />
-    } */
+      return (
+          <div className="container main" align="center">
+            <h2>Post not found</h2>
+          </div>
+       )
+    }
 
     const {
       title, timestamp, commentCount, voteScore, author, category, body
-    } = post    
+    } = post
 
-    const categoryId = categoriesIds.filter(c => { return categories[c].path === category })   
-  
-    return (      
-      <div className="container main">        
+    const categoryId = categoriesIds.filter(c => { return categories[c].path === category })
+
+    return (
+      <div className="container main">
         <div className="card shadow mb-4">
           <div className="card-body">
             <div className="bar-btns">
               <button type="button" className="btn btn-primary" onClick={this.handleEditPostClick}>Edit</button>
               <button type="button" className="btn btn-danger" onClick={this.handleDeletePostClick}>Delete</button>
             </div>
-            {category && 
+            {category &&
             <Link to={`/${categories[categoryId].path}`}>
             	<h6>{formatCategoryName(categories[categoryId].name)}</h6>
-        		</Link>}          	
+        		</Link>}
             <h2 className="card-title">{title}</h2>
         	  <div className="text-muted">
-              Posted on {formatDate(timestamp)} by <strong>{author}</strong>
+              <small>Posted on {formatDate(timestamp)} by <strong>{author}</strong></small>
             </div>
             <div>
               {body}
             </div>
             <div className="text-muted">
-            	<i className="icon">
+            	<a href="#comment-list">
+                <i className="icon icon-btn">
 	               <TiMessage />
-	            </i>
+	              </i>
+              </a>
               	{commentCount} Comments |
               	<i className="icon icon-btn" onClick={this.handleVoteUpPostClick}>
 	               <TiThumbsUp />
@@ -88,10 +103,11 @@ class PostDetails extends Component {
 	            </i>
             </div>
             <hr/>
-            <CommentList />
+            <CommentAdd parentId={postId} />
+            <CommentList postId={postId} />
           </div>
-        </div>        
-      </div>     
+        </div>
+      </div>
     )
   }
 }
@@ -99,7 +115,7 @@ class PostDetails extends Component {
 function mapStateToProps ({ posts, categories }, props) {
   const { postId } = props.match.params
   const categoriesIds = Object.keys(categories)
-  
+
   return {
     postId,
     post: posts[postId],

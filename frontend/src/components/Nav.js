@@ -28,11 +28,11 @@ class Nav extends Component {
                 New Post
               </NavLink>
             </li>
-            {categoriesIds.map((categoryId)=> (              
+            {categoriesIds.map((categoryId)=> (
               <NavLink exact key={categories[categoryId].path} to={`/${categories[categoryId].path}`} className="nav-link" activeClassName='active'>
                 {formatCategoryName(categories[categoryId].name)} Posts
               </NavLink>
-            ))}     
+            ))}
           </ul>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { RECEIVE_POSTS, ADD_POST, DELETE_POST, EDIT_POST, VOTE_UP_POST, VOTE_DOWN_POST } from '../actions/posts'
+import { RECEIVE_POSTS, ADD_POST, DELETE_POST, EDIT_POST, VOTE_UP_POST, VOTE_DOWN_POST, INCREMENT_COMMENT_COUNTER } from '../actions/posts'
 
 export default function posts (state = {}, action) {
   switch(action.type) {
@@ -12,16 +12,17 @@ export default function posts (state = {}, action) {
       return {
         ...state,
         ...posts,
-      }    
+      }
     case ADD_POST :
       return {
         ...state,
         [action.post.id]: action.post,
       }
     case DELETE_POST :
+      delete state[action.post.id]
+
       return {
-        state: Object.keys(state).filter(p => state[p].id !== action.postId),
-        postId: action.postId, 
+        ...state
       }
   	case EDIT_POST :
       return {
@@ -37,6 +38,16 @@ export default function posts (state = {}, action) {
       return {
         ...state,
         [action.post.id]: action.post
+      }
+    case INCREMENT_COMMENT_COUNTER :
+      const commentCount = state[action.parentId].commentCount + action.incrementValue
+      const post = {
+        ...state[action.parentId],
+        commentCount
+      }
+      return {
+        ...state,
+        [action.parentId]: post
       }
     default :
       return state

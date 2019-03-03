@@ -1,4 +1,5 @@
 import { _getPostComments, _addComment, _getComment, _deleteComment, _editComment, _voteUpComment, _voteDownComment } from '../utils/api'
+import { incrementCommentCounter } from './posts'
 import { showLoading, hideLoading } from 'react-redux-loading'
 
 export const RECEIVE_COMMENTS = 'RECEIVE_COMMENTS'
@@ -8,6 +9,7 @@ export const VOTE_DOWN_COMMENT = 'VOTE_DOWN_COMMENT'
 export const ADD_COMMENT = 'ADD_COMMENT'
 export const EDIT_COMMENT = 'EDIT_COMMENT'
 export const DELETE_COMMENT = 'DELETE_COMMENT'
+export const GET_COMMENT = 'GET_COMMENT'
 
 /* ADD COMMENT */
 function addComment (comment) {
@@ -17,38 +19,33 @@ function addComment (comment) {
   }
 }
 
-export function handleAddComment (body, author, parentId) {
-  return (dispatch, getState) => {
+export function handleAddComment (comment) {
+  return (dispatch) => {
+    const { parentId } = comment
 
     dispatch(showLoading())
 
-    return _addComment({
-      body, 
-      author, 
-      parentId,
-    })
+    return _addComment(comment)
       .then((comment) => dispatch(addComment(comment)))
+      .then(() => dispatch(incrementCommentCounter(parentId, 1)))
       .then(() => dispatch(hideLoading()))
   }
 }
 
 /* EDIT COMMENT */
-function editComment (post) {
+function editComment (comment) {
   return {
     type: EDIT_COMMENT,
-    post,
+    comment,
   }
 }
 
-export function handleEditComment (post) {
-  return (dispatch, getState) => {
-    
+export function handleEditComment (comment) {
+  return (dispatch) => {
     dispatch(showLoading())
 
-    return _editComment({
-      post
-    })
-      .then((post) => dispatch(editComment(post)))
+    return _editComment(comment)
+      .then((comment) => dispatch(editComment(comment)))
       .then(() => dispatch(hideLoading()))
   }
 }
@@ -60,62 +57,81 @@ export function receiveComments (comments) {
   }
 }
 
-function getPostComments (post, comments) {
+function getPostComments (comments) {
   return {
     type: GET_POST_COMMENTS,
-    post,
     comments,
   }
 }
 
-export function handleGetPostComments(post) {
+export function handleGetPostComments(commentId) {
   return (dispatch) => {
-    return _getPostComments(post)
+    return _getPostComments(commentId)
       .then((comments) => {
-        dispatch(getPostComments(post, comments))
-        console.log(comments)
+        dispatch(getPostComments(comments))
       })
   }
 }
 
-function voteUpComment ({ post }) {
+function voteUpComment (comment) {
   return {
     type: VOTE_UP_COMMENT,
-    post,
-    option: 'voteUp'
+    comment,
   }
 }
 
-export function handleVoteUpComment (info) {
+export function handleVoteUpComment (commentId) {
   return (dispatch) => {
-    dispatch(voteUpComment(info))
-
-    return _voteUpComment(info)
-      .catch((e) => {
-        console.warn('Error in handleVoteUpComment: ', e)
-        //dispatch(voteUpComment(info))n   que alerna like
-        alert('The was an error voting up the post. Try again.')
-      })
+    return _voteUpComment(commentId)
+      .then(comment => dispatch(voteUpComment(comment)))
   }
 }
 
-function voteDownComment ({ post }) {
+function voteDownComment (comment) {
   return {
     type: VOTE_DOWN_COMMENT,
-    post,
-    option: 'voteDown'
+    comment,
   }
 }
 
-export function handleVoteDownComment (info) {
+export function handleVoteDownComment (commentId) {
   return (dispatch) => {
-    dispatch(voteDownComment(info))
+    return _voteDownComment(commentId)
+      .then(comment => dispatch(voteDownComment(comment)))
+  }
+}
 
-    return voteDownComment(info)
-      .catch((e) => {
-        console.warn('Error in handleVoteDownComment: ', e)
-        //dispatch(voteUpComment(info))  que alerna like
-        alert('The was an error voting down the post. Try again.')
-      })
+function deleteComment (comment) {
+  return {
+    type: DELETE_COMMENT,
+    comment,
+  }
+}
+
+export function handleDeleteComment (comment) {
+  return (dispatch) => {
+    dispatch(showLoading())
+    const { parentId } = comment
+
+    return _deleteComment(comment)
+      .then(() => dispatch(deleteComment(comment)))
+      .then(() => dispatch(incrementCommentCounter(parentId, -1)))
+      .then(() => dispatch(hideLoading()))
+  }
+}
+
+function getComment (comment) {
+  return {
+    type: GET_COMMENT,
+    comment,
+  }
+}
+
+export function handleGetComment (commentId) {
+  return (dispatch) => {
+    dispatch(showLoading())
+    return _getComment(commentId)
+      .then((comment) => dispatch(getComment(comment)))
+      .then(() => dispatch(hideLoading()))
   }
 }

@@ -2,26 +2,26 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { formatDate, formatCategoryName } from '../utils/helpers'
 import { handleVoteUpPost, handleVoteDownPost } from '../actions/posts'
-import { Link, withRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { TiMessage, TiThumbsUp, TiThumbsDown } from 'react-icons/ti'
 
 class PostListItem extends Component {
 	handleVoteUpPostClick = (e) => {
 		e.preventDefault()
-		
+
 		const { dispatch, id } = this.props
-		
+
 		dispatch(handleVoteUpPost(id))
 	}
 
 	handleVoteDownPostClick = (e) => {
 		e.preventDefault()
-		
+
 		const { dispatch, id } = this.props
-		
+
 		dispatch(handleVoteDownPost(id))
 	}
-  
+
   render() {
 		const { post } = this.props
 
@@ -43,7 +43,7 @@ class PostListItem extends Component {
 								<h2 className="card-title">{title}</h2>
 						</Link>
             <div className="text-muted">
-              Posted on {formatDate(timestamp)} by <strong>{author}</strong>
+              <small>Posted on {formatDate(timestamp)} by <strong>{author}</strong></small>
             </div>
             <div className="text-muted">
             	<i className="icon">
@@ -59,16 +59,16 @@ class PostListItem extends Component {
 	            </i>
             </div>
             <hr/>
-						<Link to={`/${post.category}/${post.id}`}>	
+						<Link to={`/${post.category}/${post.id}`}>
 							<button className="btn btn-sm btn-primary">Read Post &rarr;</button>
 						</Link>
           </div>
-        </div>     
+        </div>
     )
   }
 }
 
-function mapStateToProps ({ posts }, { id }) {	
+function mapStateToProps ({ posts }, { id }) {
   return {
     id,
 		post: posts[id],

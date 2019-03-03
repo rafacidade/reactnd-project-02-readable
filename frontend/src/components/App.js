@@ -8,16 +8,14 @@ import PostDetails from './PostDetails'
 import PostAdd from './PostAdd'
 import PostEdit from './PostEdit'
 import Nav from './Nav'
-import Footer from './Footer'
 import NotFound from './NotFound'
-import CommentForm from './CommentForm';
+import CommentEdit from './CommentEdit';
 
 class App extends Component {
   componentDidMount() {
-    console.log('did mount')
     this.props.dispatch(handleInitialData())
   }
-  
+
   render() {
     return (
       <Router>
@@ -31,15 +29,15 @@ class App extends Component {
               : <Switch>
                 <Route exact path='/' component={PostList} />
                 <Route exact path='/new' component={PostAdd} />
+                <Route exact path='/not-found' component={NotFound} />
                 <Route exact path='/:categoryPath' component={PostList} />
                 <Route exact path='/:categoryPath/:postId' component={PostDetails} />
                 <Route exact path='/edit/post/:postId' component={PostEdit} />
-                <Route exact path='/edit/comment/:commentId' component={CommentForm} />
-                <Route exact path='/not-found' component={NotFound} />
+                <Route exact path='/edit/comment/:commentId' component={CommentEdit} />
+                <Route exact path='*' component={NotFound} />
                 </Switch>}
           </div>
-          <Footer />     
-        </Fragment>        
+        </Fragment>
       </Router>
     )
   }

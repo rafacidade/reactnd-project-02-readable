@@ -1,88 +1,122 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { handleAddComment } from '../actions/comments'
+import { Redirect, withRouter } from 'react-router-dom'
+import { handleAddComment, handleEditComment } from '../actions/comments'
 
 class CommentForm extends Component {
   state = {
+    id: '',
     author: '',
     body: '',
-    returnToPost: false,
+    parentId: '',
+    returnTo: '',
+  }
+
+  componentDidMount() {
+    const { commentId, parentId } = this.props
+
+    this.setState({ parentId })
+
+    if (commentId !== '') {
+      const { id, author, body } = this.props.comments[commentId]
+
+      this.setState({
+        id,
+        author,
+        body,
+      })
+    }
   }
 
   handleChange = (e) => {
     const { name, value } = e.target
 
     this.setState(() => ({
-      [name]: value.trim()
+      [name]: value
     }))
   }
 
   handleSubmit = (e) => {
     e.preventDefault()
-    
-    const { dispatch } = this.props
 
     if (!this.validateForm()) {
       alert('Something is missing!')
       return
     }
 
-    const { author, body } = this.state
+    const { id, author, body, parentId } = this.state
 
-    const comment = { author, body }
+    const comment = { id, author, body, parentId }
 
-    dispatch(handleAddComment(comment))  
-  
+    comment.id === '' ? this.addComment(comment) : this.editComment(comment)
+  }
+
+  addComment = (comment) => {
+    const { dispatch } = this.props
+
+    dispatch(handleAddComment(comment))
+
     this.setState(() => ({
-      author: '',
+      id: '',
       body: '',
-      returnToPost: true,
+      author: '',
+      returnTo: '',
     }))
 
-    alert('Success!')
+    alert('Comment successfully added!!')
+  }
+
+  editComment = (comment) => {
+    const { dispatch, posts, parentId } = this.props
+    dispatch(handleEditComment(comment))
+
+    this.setState(() => ({
+      id: '',
+      body: '',
+      author: '',
+      returnTo: `/${posts[parentId].category}/${parentId}`,
+    }))
+
+    alert('Comment successfully updated!!')
   }
 
   validateForm = () => {
-    const { author, title, category, body } = this.state
-    return author !== '' && title !== '' && category !== '' && body !== ''
-  };
+    const { author, body } = this.state
+    return author.trim() !== '' && body.trim() !== ''
+  }
 
   render() {
-    const { author, body } = this.state
+    const { author, body, returnTo } = this.state
+
+    if (returnTo !== '') {
+      return <Redirect to={returnTo} />
+    }
 
     return (
-		<div className="container">
-	    <div className="row">
-	      <div className="col-md-12">
-	        <h4 className="my-4">New Comment</h4>
-
-	        <div className="card mb-4">       
-	          <div className="card-body">
-	            <form>
-	            	<div className="form-group">
-	              		<input type="text" className="form-control form-control-sm" placeholder="Your Name" onChange={this.handleChangeAuthor} defaultValue={author}></input>
-	            	</div>
-	            	
-	            	<div className="form-group">
-	            		<textarea rows="5" className="form-control form-control-sm" placeholder="Your Comment" onChange={this.handleChangeBody} maxLength={300} defaultValue={body}></textarea>
-            		</div>
-	            	
-	            	<button type="submit" className="btn btn-primary">Submit</button>	            
-	            </form>
-	          </div>
-	        </div>        
-	      </div>
-	    </div>
-	  </div>
+      <div className="card mb-4">
+        <div className="card-body">
+          <form onSubmit={this.handleSubmit}>
+            <div className="form-group">
+                <input type="text" name="author" className="form-control form-control-sm" placeholder="Your Name" onChange={this.handleChange} value={author}></input>
+            </div>
+            <div className="form-group">
+              <textarea rows="5" name="body" className="form-control form-control-sm" placeholder="Your Comment" onChange={this.handleChange} maxLength={300} value={body}></textarea>
+            </div>
+            <button type="submit" className="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
     )
   }
 }
 
-function mapStateToProps ({ posts }, { commentId }) {  
+function mapStateToProps ({ posts, comments }, { commentId, parentId }) {
   return {
     commentId,
+    parentId,
+    comments,
     posts,
   }
 }
 
-export default connect(mapStateToProps)(CommentForm)
+export default withRouter(connect(mapStateToProps)(CommentForm))

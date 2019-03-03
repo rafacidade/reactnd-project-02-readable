@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 import PostListItem from './PostListItem'
 import { formatCategoryName } from '../utils/helpers';
 
@@ -13,20 +14,26 @@ class PostList extends Component {
 
   handleOrderByMostRecentClick = (e) => {
     e.preventDefault()
-    this.setState({ orderBy: ORDER_BY_MOST_RECENT }) 
+    this.setState({ orderBy: ORDER_BY_MOST_RECENT })
   }
-  
+
   handleOrderByBestVotingClick = (e) => {
     e.preventDefault()
-    this.setState({ orderBy: ORDER_BY_BEST_VOTING })   
+    this.setState({ orderBy: ORDER_BY_BEST_VOTING })
   }
-  
+
   render() {
-    const { postsIds, posts, categories, categoriesIds, categoryPath } = this.props
+    const { postsIds, posts, categories, categoryPath } = this.props
 
-    const categoryId = categoryPath !== undefined ? categoriesIds.filter(c => { return categories[c].path === categoryPath }) : ''
+    //verify if url complement is a valid category
+    if (categoryPath !== '') {
+      if (typeof categories[categoryPath] === 'undefined') {
+        //invalid category path, not found in categories (wrong url)
+        return <Redirect to='/not-found'/>
+      }
+    }
 
-    const pageTitle = categoryId ? formatCategoryName(categories[categoryId].path) + ' Posts' : 'All Posts'
+    const pageTitle = categoryPath ? formatCategoryName(categories[categoryPath].name) + ' Posts' : 'All Posts'
 
     //define order
     this.state.orderBy === ORDER_BY_MOST_RECENT
@@ -48,7 +55,7 @@ class PostList extends Component {
             <h1 className="my-4">{pageTitle} ({postsIds.length})</h1>
             {postsIds.map((id) => (
               <PostListItem key={id} id={id} />
-            ))}            
+            ))}
           </div>
         </div>
       </div>
@@ -57,18 +64,16 @@ class PostList extends Component {
 }
 
 function mapStateToProps ({ posts, categories }, props) {
-  const { categoryPath } = props.match.params
-  const categoriesIds = Object.keys(categories)  
-  
-  const postsIds = typeof categoryPath === 'undefined'
+  const categoryPath = typeof props.match.params.categoryPath === 'undefined' ? '' : props.match.params.categoryPath
+
+  const postsIds = categoryPath === ''
     ? Object.keys(posts)
     : Object.keys(posts).filter(postId => posts[postId].category === categoryPath)
-    
+
   return {
-    postsIds: postsIds.sort((a,b) => posts[b].timestamp - posts[a].timestamp),          
+    postsIds: postsIds.sort((a,b) => posts[b].timestamp - posts[a].timestamp),
     posts,
     categories,
-    categoriesIds,
     categoryPath,
   }
 }

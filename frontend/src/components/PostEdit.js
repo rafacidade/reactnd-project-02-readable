@@ -1,12 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { handleAddPost } from '../actions/posts'
-import { Redirect } from 'react-router-dom'
 import PostForm from './PostForm'
-import { formatCategoryName } from '../utils/helpers'
 
 class PostEdit extends Component {
-  render() {    
+  render() {
     return (
   		<div className="container main">
   	    <div className="row">
@@ -20,10 +17,11 @@ class PostEdit extends Component {
   }
 }
 
-function mapStateToProps ({ }, props) {
+function mapStateToProps ({ posts }, props) {
   const { postId } = props.match.params
   return {
     postId,
+    posts,
   }
 }
 
